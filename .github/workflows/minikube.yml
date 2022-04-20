@@ -26,3 +26,5 @@ jobs:
       run: cd $tf_working_dir && terragrunt init
     - name: 'Terragrunt Apply'
       run: cd $tf_working_dir && terragrunt apply --auto-approve --input=false
+    - name: show running pods
+      run: kubectl get pods -n dev-wordpress
