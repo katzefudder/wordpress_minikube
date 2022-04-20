@@ -1,3 +1,5 @@
+![Deploying Wordpress on Minikube](https://github.com/katzefudder/wordpress_minikube/workflows/Deploying Wordpress on Minikube/badge.svg)
+
 # Wordpress on Kubernetes
 
 Infrastructure as Code (IaC): Terraform & Terragrunt
