@@ -1,0 +1,46 @@
+name: CI
+on:
+  - push
+  - pull_request
+env:
+  tf_version: 'latest'
+  tg_version: 'latest'
+  tf_working_dir: 'environments/dev'
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    name: job1
+    steps:
+    - name: start minikube
+      id: minikube
+      uses: medyagh/setup-minikube@master
+    # now you can run kubectl to see the pods in the cluster
+    - name: 'Checkout'
+      uses: actions/checkout@master
+    - name: 'Terragrunt Init'
+      uses: the-commons-project/terragrunt-github-actions@master
+      with:
+        tf_actions_version: ${{ env.tf_version }}
+        tg_actions_version: ${{ env.tg_version }}
+        tf_actions_subcommand: 'init'
+        tf_actions_working_dir: ${{ env.tf_working_dir }}
+        tf_actions_comment: true
+    - name: 'Terragrunt Plan'
+      uses: the-commons-project/terragrunt-github-actions@master
+      with:
+        tf_actions_version: ${{ env.tf_version }}
+        tg_actions_version: ${{ env.tg_version }}
+        tf_actions_subcommand: 'plan'
+        tf_actions_working_dir: ${{ env.tf_working_dir }}
+        tf_actions_comment: true
+    - name: 'Terragrunt Plan'
+      uses: the-commons-project/terragrunt-github-actions@master
+      with:
+        tf_actions_version: ${{ env.tf_version }}
+        tg_actions_version: ${{ env.tg_version }}
+        tf_actions_subcommand: 'apply --auto-approve'
+        tf_actions_working_dir: ${{ env.tf_working_dir }}
+        tf_actions_comment: true
+    - name: kubectl
+      run: kubectl get pods -A
+  
