@@ -14,8 +14,8 @@ jobs:
     - name: start minikube
       id: minikube
       uses: medyagh/setup-minikube@master
-    - name: print $KUBECONFIG
-      run: echo $KUBECONFIG
+    - name: export kube/config
+      run: kubectl config view --flatten > ~/.kube/config
     - name: Test service
       run: minikube service list
     - name: 'Checkout'
