@@ -1,4 +1,4 @@
-name: CI
+name: Deploying Wordpress on Minikube
 on:
   - push
   - pull_request
