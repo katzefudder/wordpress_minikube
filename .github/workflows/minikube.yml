@@ -14,11 +14,8 @@ jobs:
     - name: start minikube
       id: minikube
       uses: medyagh/setup-minikube@master
-    # now you can run kubectl to see the pods in the cluster
-    - name: debugging
-      run: printenv
-    - name: Try the cluster!
-      run: kubectl get pods -A
+    - name: print $KUBECONFIG
+      run: echo $KUBECONFIG
     - name: Test service
       run: minikube service list
     - name: 'Checkout'
