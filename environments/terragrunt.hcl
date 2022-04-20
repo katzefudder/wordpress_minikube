@@ -21,10 +21,6 @@ generate "provider" {
     provider "kubernetes" {
       config_path = "~/.kube/config"
     }
-    provider "kubernetes" {
-      alias = "github"
-      config_path = "~/runner/.minikube/config"
-    }
 EOF
 }
 

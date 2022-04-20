@@ -11,47 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     name: Wordpress on Minikube
     steps:
+    - name: Install tfenv
+      run: git clone https://github.com/tfutils/tfenv.git ~/.tfenv && echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
+    - name: Install tgenv
+      run: git clone https://github.com/cunymatthieu/tgenv.git ~/.tgenv && echo 'export PATH="$HOME/.tgenv/bin:$PATH"' >> ~/.bash_profile
+    - name: Install required Terraform & Terragrunt versions
+      run: cd environments && tfenv install && tgenv install
     - name: 'Checkout'
       uses: actions/checkout@master
     - name: start minikube
       id: minikube
       uses: medyagh/setup-minikube@master
-    - name: show kube config
-      run: kubectl config view
-    - name: export kube/config
-      run: kubectl config view --flatten > ~/.kube/config
-    - name: show kube config
-      run: cat ~/.kube/config
-    - name: debug home dir
-      run: ls -la ~/.kube
-    - name: debug home runner dir
-      run: ls -la /home/runner/
-    - name: debug home runner kube dir
-      run: ls -la /home/runner/.minikube/
     - name: 'Terragrunt Init'
-      uses: the-commons-project/terragrunt-github-actions@master
-      with:
-        tf_actions_version: ${{ env.tf_version }}
-        tg_actions_version: ${{ env.tg_version }}
-        tf_actions_subcommand: 'init'
-        tf_actions_working_dir: ${{ env.tf_working_dir }}
-        tf_actions_comment: true
-    - name: 'Terragrunt Plan'
-      uses: the-commons-project/terragrunt-github-actions@master
-      with:
-        tf_actions_version: ${{ env.tf_version }}
-        tg_actions_version: ${{ env.tg_version }}
-        tf_actions_subcommand: 'plan'
-        tf_actions_working_dir: ${{ env.tf_working_dir }}
-        tf_actions_comment: true
+      run: cd $tf_working_dir && terragrunt init
     - name: 'Terragrunt Apply'
-      uses: the-commons-project/terragrunt-github-actions@master
-      with:
-        tf_actions_version: ${{ env.tf_version }}
-        tg_actions_version: ${{ env.tg_version }}
-        tf_actions_subcommand: 'apply'
-        tf_actions_working_dir: ${{ env.tf_working_dir }}
-        tf_actions_comment: true
-    - name: kubectl
-      run: kubectl get pods -A
-  
+      run: cd $tf_working_dir && terragrunt apply --auto-approve --input=false
