@@ -15,10 +15,10 @@ jobs:
       run: git clone https://github.com/tfutils/tfenv.git ~/.tfenv && echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
     - name: Install tgenv
       run: git clone https://github.com/cunymatthieu/tgenv.git ~/.tgenv && echo 'export PATH="$HOME/.tgenv/bin:$PATH"' >> ~/.bash_profile
-    - name: Install required Terraform & Terragrunt versions
-      run: cd environments && tfenv install && tgenv install
     - name: 'Checkout'
       uses: actions/checkout@master
+    - name: Install required Terraform & Terragrunt versions
+      run: cd environments && tfenv install && tgenv install
     - name: start minikube
       id: minikube
       uses: medyagh/setup-minikube@master
