@@ -12,7 +12,7 @@ jobs:
     name: Wordpress on Minikube
     steps:
     - name: Install tfenv
-      run: git clone https://github.com/tfutils/tfenv.git ~/.tfenv && sudo ln -s ~/.tfenv/bin/* /usr/local/bin
+      run: git clone https://github.com/tfutils/tfenv.git ~/.tfenv && sudo rm /usr/local/bin/terraform && sudo ln -s ~/.tfenv/bin/* /usr/local/bin
     - name: Install tgenv
       run: git clone https://github.com/cunymatthieu/tgenv.git ~/.tgenv && sudo ln -s ~/.tgenv/bin/* /usr/local/bin
     - name: 'Checkout'
