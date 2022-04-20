@@ -17,7 +17,7 @@ jobs:
     - name: export kube/config
       run: kubectl config view --flatten > ~/.kube/config
     - name: Test service
-      run: minikube service list
+      run: minikube service list --kubeconfig ~/.kube/config
     - name: 'Checkout'
       uses: actions/checkout@master
     - name: 'Terragrunt Init'
@@ -45,5 +45,5 @@ jobs:
         tf_actions_working_dir: ${{ env.tf_working_dir }}
         tf_actions_comment: true
     - name: kubectl
-      run: kubectl get pods -A
+      run: kubectl get pods -A -n dev-wordpress --kubeconfig ~/.kube/config
   
