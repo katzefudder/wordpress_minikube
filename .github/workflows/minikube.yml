@@ -7,14 +7,20 @@ env:
   tg_version: 'latest'
   tf_working_dir: 'environments/dev'
 jobs:
-  job1:
+  Wordpress_on_Minikube:
     runs-on: ubuntu-latest
-    name: job1
+    name: Wordpress on Minikube
     steps:
     - name: start minikube
       id: minikube
       uses: medyagh/setup-minikube@master
     # now you can run kubectl to see the pods in the cluster
+    - name: debugging
+      run: printenv
+    - name: Try the cluster!
+      run: kubectl get pods -A
+    - name: Test service
+      run: minikube service list
     - name: 'Checkout'
       uses: actions/checkout@master
     - name: 'Terragrunt Init'
