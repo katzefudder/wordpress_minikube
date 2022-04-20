@@ -1,4 +1,4 @@
-![Deploying Wordpress on Minikube](https://github.com/katzefudder/wordpress_minikube/workflows/Deploying Wordpress on Minikube/badge.svg)
+![Deploying Wordpress on Minikube](https://github.com/katzefudder/wordpress_minikube/workflows/Deploying%20Wordpress%20on%20Minikube/badge.svg)
 
 # Wordpress on Kubernetes
 
