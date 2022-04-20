@@ -19,7 +19,7 @@ generate "provider" {
     }
 
     provider "kubernetes" {
-      config_path = "~/.kube/config"
+      config_path = "~/runner/.kube/config"
     }
 EOF
 }
