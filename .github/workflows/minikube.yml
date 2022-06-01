@@ -22,7 +22,7 @@ jobs:
     - name: start minikube
       id: minikube
       uses: medyagh/setup-minikube@master
-    - nanme: enable ingress
+    - name: enable ingress
       run: minikube addons enable ingress
     - name: 'Terragrunt Init'
       run: cd $tf_working_dir && terragrunt init
