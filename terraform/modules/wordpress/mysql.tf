@@ -13,29 +13,33 @@ resource "kubernetes_service" "mysql-service" {
  }
 }
 
-resource "kubernetes_deployment" "mysql" {
- metadata {
+resource "kubernetes_stateful_set" "mysql" {
+  metadata {
    name = "mysql"
    labels = local.mysql_labels
    namespace = kubernetes_namespace.wordpress.metadata.0.name
  }
- spec {
-   replicas = 1
-   selector {
+  spec {
+    replicas = 1
+    selector {
      match_labels = local.mysql_labels
    }
-   template {
-     metadata {
-       labels = local.mysql_labels
-     }
-     spec {
-       container {
-         image = "mysql:8.0.28"
-         name  = "mysql"
-         port {
-           container_port = 3306
-         }
-         env {
+
+    service_name = "mysql"
+
+    template {
+      metadata {
+        labels = local.mysql_labels
+      }
+
+      spec {
+        container {
+          image = "mysql:8.0.28"
+          name  = "mysql"
+          port {
+            container_port = 3306
+          }
+          env {
            name = "MYSQL_ROOT_PASSWORD"
            value_from {
              secret_key_ref {
@@ -48,8 +52,32 @@ resource "kubernetes_deployment" "mysql" {
              name = "MYSQL_DATABASE"
              value = "wordpress"
          }
-       }
-     }
-   }
- }
+
+          volume_mount {
+            name       = "db"
+            mount_path = "/var/lib/mysql"
+          }
+        }
+
+        termination_grace_period_seconds = 10
+      }
+    }
+
+    volume_claim_template {
+      metadata {
+        name = "db"
+      }
+
+      spec {
+        access_modes       = ["ReadWriteOnce"]
+        storage_class_name = "standard"
+
+        resources {
+          requests = {
+            storage = "100Mi"
+          }
+        }
+      }
+    }
+  }
 }
