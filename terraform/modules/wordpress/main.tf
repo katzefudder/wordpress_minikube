@@ -7,11 +7,9 @@ resource "kubernetes_namespace" "wordpress" {
 locals {
  wordpress_labels = {
    App = "wordpress"
-   Tier = "frontend"
  }
  mysql_labels = {
    App = "wordpress"
-   Tier = "mysql"
  }
 }
 
