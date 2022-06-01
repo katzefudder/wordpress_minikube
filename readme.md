@@ -56,6 +56,8 @@ Get all Pods
 
 `kubectl get pods -n dev-wordpress`
 
-Get service's URL
+Expose Minikube to your host
 
-`minikube service wordpress-service --url -n dev-wordpress`
+`minikube tunnel`
+
+Your local Kubernetes based wordpress installation should now be available [here](http://localhost/wp-admin/install.php)
