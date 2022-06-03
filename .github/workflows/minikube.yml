@@ -32,3 +32,5 @@ jobs:
       run: cd $tf_working_dir && terragrunt apply --auto-approve --input=false
     - name: show running pods
       run: kubectl get pods -n dev-wordpress
+    - name: test output
+      run: curl --silent -IL $(minikube ip) 2>&1 | grep "HTTP/1.1 200 OK"
