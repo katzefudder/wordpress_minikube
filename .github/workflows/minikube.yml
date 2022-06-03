@@ -33,4 +33,4 @@ jobs:
     - name: show running pods
       run: kubectl get pods -n dev-wordpress
     - name: test output
-      run: curl --silent -IL $(minikube ip) 2>&1 | grep "HTTP/1.1 200 OK"
+      run: curl --fail --silent -IL $(minikube ip) 2>&1 | grep "HTTP/1.1 200 OK"
