@@ -24,8 +24,8 @@ jobs:
       uses: medyagh/setup-minikube@master
     - name: enable ingress
       run: minikube addons enable ingress
-    - name: debug ingress
-      run: kubectl get all -n ingress-nginx
+    - name: removing validation webhook
+      run: kubectl delete  validatingwebhookconfigurations ingress-nginx-admission
     - name: 'Terragrunt Init'
       run: cd $tf_working_dir && terragrunt init
     - name: 'Terragrunt Apply'
