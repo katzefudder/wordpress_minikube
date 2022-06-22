@@ -6,8 +6,8 @@ resource "kubernetes_service" "wordpress-service" {
  spec {
    selector = local.wordpress_labels
    port {
-     port        = 80
-     target_port = 80
+     port        = 8080
+     target_port = 8080
    }
  }
 }
@@ -54,6 +54,13 @@ resource "kubernetes_deployment" "wordpress" {
                key = "password"
              }
            }
+         }
+       }
+       container {
+         image = "ghcr.io/katzefudder/openresty:latest"
+         name  = "openresty"
+         port {
+            container_port = 8080
          }
        }
      }
