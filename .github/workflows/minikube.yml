@@ -32,7 +32,7 @@ jobs:
           context: ./docker
           file: docker/Dockerfile_openresty
           push: true
-          tags: openresty:latest
+          tags: ghcr.io/katzefudder/openresty:latest
   Wordpress_on_Minikube:
     runs-on: ubuntu-latest
     name: Wordpress on Minikube
