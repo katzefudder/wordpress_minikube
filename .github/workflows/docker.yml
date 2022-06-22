@@ -37,3 +37,4 @@ jobs:
           file: docker/Dockerfile_openresty
           push: true
           tags: openresty:latest
+          no-cache: true
