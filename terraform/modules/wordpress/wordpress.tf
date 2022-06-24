@@ -1,11 +1,19 @@
+resource "kubernetes_namespace" "wordpress" {
+  metadata {
+    name = "${var.stage}-wordpress"
+  }
+}
+
 resource "kubernetes_service" "wordpress-service" {
  metadata {
    name = "wordpress-service"
    namespace = kubernetes_namespace.wordpress.metadata.0.name
+   labels = local.wordpress_labels
  }
  spec {
    selector = local.wordpress_labels
    port {
+     name = "web"
      port        = 8080
      target_port = 8080
    }

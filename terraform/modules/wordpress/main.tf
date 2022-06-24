@@ -1,15 +1,9 @@
-resource "kubernetes_namespace" "wordpress" {
-  metadata {
-    name = "${var.stage}-${var.namespace}"
-  }
-}
-
 locals {
  wordpress_labels = {
    App = "wordpress"
  }
  mysql_labels = {
-   App = "wordpress"
+   App = "mysql"
  }
 }
 
