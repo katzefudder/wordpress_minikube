@@ -1,14 +1,33 @@
+resource "kubernetes_secret" "mysql-pass" {
+ metadata {
+   name = "mysql-pass"
+   namespace = kubernetes_namespace.wordpress.metadata.0.name
+ }
+ data = {
+   password = "root"
+ }
+
+ type = "kubernetes.io/basic-auth"
+}
+
 resource "kubernetes_service" "mysql-service" {
  metadata {
    name = "mysql-service"
    namespace = kubernetes_namespace.wordpress.metadata.0.name
+   labels = local.mysql_labels
  }
  spec {
-   selector = local.mysql_labels
-   port {
-     port        = 3306
-     target_port = 3306
-   }
+    selector = local.mysql_labels
+    port {
+      name = "mysql"
+      port        = 3306
+      target_port = 3306
+    }
+    port {
+      name = "exporter"
+      port        = 9104
+      target_port = 9104
+    }
    type = "NodePort"
  }
 }
@@ -56,6 +75,18 @@ resource "kubernetes_stateful_set" "mysql" {
           volume_mount {
             name       = "db"
             mount_path = "/var/lib/mysql"
+          }
+        }
+
+        container {
+          image = "prom/mysqld-exporter"
+          name = "mysql-exporter"
+          port {
+            container_port = 9104
+          }
+          env {
+            name = "DATA_SOURCE_NAME"
+            value = "root:root@(localhost:3306)/wordpress"
           }
         }
 

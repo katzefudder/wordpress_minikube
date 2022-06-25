@@ -6,15 +6,3 @@ locals {
    App = "mysql"
  }
 }
-
-resource "kubernetes_secret" "mysql-pass" {
- metadata {
-   name = "mysql-pass"
-   namespace = kubernetes_namespace.wordpress.metadata.0.name
- }
- data = {
-   password = "root"
- }
-
- type = "kubernetes.io/basic-auth"
-}
