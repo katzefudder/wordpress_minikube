@@ -66,3 +66,45 @@ resource "kubernetes_manifest" "monitor-mysql" {
     }
   }
 }
+
+resource "kubernetes_config_map_v1" "grafana-mysql-exporter" {
+  metadata {
+    name = "mysql-exporter"
+    namespace = kubernetes_namespace.prometheus.metadata.0.name
+    annotations = {
+      "meta.helm.sh/release-name" = "prometheus"
+      "meta.helm.sh/release-namespace" = "prometheus"
+    }
+    labels = {
+      "app" = "kube-prometheus-stack-grafana"
+      "app.kubernetes.io/instance" = "prometheus"
+      "grafana_dashboard" = 1
+      "release" = "prometheus"
+    }
+  }
+
+  data = {
+    "mysql-exporter.json" = "${file("${path.module}/grafana/mysql-exporter.json")}"
+  }
+}
+
+resource "kubernetes_config_map_v1" "openresty-exporter" {
+  metadata {
+    name = "openresty-exporter"
+    namespace = kubernetes_namespace.prometheus.metadata.0.name
+    annotations = {
+      "meta.helm.sh/release-name" = "prometheus"
+      "meta.helm.sh/release-namespace" = "prometheus"
+    }
+    labels = {
+      "app" = "kube-prometheus-stack-grafana"
+      "app.kubernetes.io/instance" = "prometheus"
+      "grafana_dashboard" = 1
+      "release" = "prometheus"
+    }
+  }
+
+  data = {
+    "mysql-exporter.json" = "${file("${path.module}/grafana/openresty-exporter.json")}"
+  }
+}
