@@ -20,6 +20,17 @@ resource "kubernetes_service" "wordpress-service" {
  }
 }
 
+resource "kubernetes_config_map" "openresty-proxy-conf" {
+  metadata {
+    name      = "openresty-proxy-conf"
+    namespace = kubernetes_namespace.wordpress.metadata.0.name
+  }
+
+  data = {
+    "proxy.conf" = "${file("${path.module}/openresty/proxy.conf")}"
+  }
+}
+
 resource "kubernetes_deployment" "wordpress" {
  metadata {
    name = "wordpress"
@@ -70,7 +81,17 @@ resource "kubernetes_deployment" "wordpress" {
          port {
             container_port = 8080
          }
+         volume_mount {
+            mount_path = "/etc/nginx/conf.d"
+            name       = "openresty-conf"
+         }
        }
+       volume {
+          name = "openresty-conf"
+          config_map {
+            name = kubernetes_config_map.openresty-proxy-conf.metadata.0.name
+          }
+        }
      }
    }
  }
