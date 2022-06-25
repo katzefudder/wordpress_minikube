@@ -1,15 +1,34 @@
+resource "kubernetes_namespace" "wordpress" {
+  metadata {
+    name = "${var.stage}-wordpress"
+  }
+}
+
 resource "kubernetes_service" "wordpress-service" {
  metadata {
    name = "wordpress-service"
    namespace = kubernetes_namespace.wordpress.metadata.0.name
+   labels = local.wordpress_labels
  }
  spec {
    selector = local.wordpress_labels
    port {
-     port        = 80
-     target_port = 80
+     name = "web"
+     port        = 8080
+     target_port = 8080
    }
  }
+}
+
+resource "kubernetes_config_map" "openresty-proxy-conf" {
+  metadata {
+    name      = "openresty-proxy-conf"
+    namespace = kubernetes_namespace.wordpress.metadata.0.name
+  }
+
+  data = {
+    "proxy.conf" = "${file("${path.module}/openresty/proxy.conf")}"
+  }
 }
 
 resource "kubernetes_deployment" "wordpress" {
@@ -56,6 +75,23 @@ resource "kubernetes_deployment" "wordpress" {
            }
          }
        }
+       container {
+         image = "ghcr.io/katzefudder/openresty:latest"
+         name  = "openresty"
+         port {
+            container_port = 8080
+         }
+         volume_mount {
+            mount_path = "/etc/nginx/conf.d"
+            name       = "openresty-conf"
+         }
+       }
+       volume {
+          name = "openresty-conf"
+          config_map {
+            name = kubernetes_config_map.openresty-proxy-conf.metadata.0.name
+          }
+        }
      }
    }
  }

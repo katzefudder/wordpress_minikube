@@ -1,0 +1,20 @@
+FROM openresty/openresty:1.21.4.1-1-alpine
+
+ENV PATH=$PATH:/usr/local/openresty/luajit/bin:/usr/local/openresty/nginx/sbin:/usr/local/openresty/bin
+
+RUN apk update \
+    && apk add curl perl \
+    # install nginx-lua-openresty https://opm.openresty.org/package/knyar/nginx-lua-prometheus/
+    && opm get knyar/nginx-lua-prometheus \
+    && mkdir -p /var/log/nginx \
+    && mkdir /var/www \
+    # clean up nginx default config
+    && rm /etc/nginx/conf.d/default.conf \
+    && apk del curl perl \
+    && rm -rf /var/cache/apk/*
+
+COPY nginx.conf /usr/local/openresty/nginx/conf
+COPY prometheus.conf /etc/nginx
+COPY proxy.conf /etc/nginx/conf.d
+
+EXPOSE 8080
