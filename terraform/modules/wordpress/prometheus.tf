@@ -11,60 +11,52 @@ resource "helm_release" "prometheus" {
   namespace = kubernetes_namespace.prometheus.metadata.0.name
 }
 
-resource "kubernetes_manifest" "monitor-wordpress" {
+resource "kubectl_manifest" "monitor-wordpress" {
   depends_on = [
     helm_release.prometheus
   ]
-  manifest = {
-    "apiVersion" = "monitoring.coreos.com/v1"
-    "kind"       = "ServiceMonitor"
-    "metadata" = {
-      "name"      = "wordpress-monitor"
-      "namespace" = kubernetes_namespace.prometheus.metadata.0.name
-      "labels" = {
-        "release" = "prometheus"
+  yaml_body  = <<-EOF
+    apiVersion: monitoring.coreos.com/v1
+    kind: ServiceMonitor
+    metadata:
+      name: wordpress-monitor
+      namespace: "prometheus"
+      labels: {
+        release: prometheus
       }
-    }
-    "spec" = {
-      "selector" = {
-        "matchLabels" = local.wordpress_labels
-      }
-      "namespaceSelector" = {
-        "any" = true
-      }
-      "endpoints" = [{
-        "port" = "web"
-      }]
-    }
-  }
+    spec:
+      selector:
+        matchLabels:
+          App: wordpress
+        namespaceSelector:
+          any: true
+      endpoints:
+        - port: web
+    EOF
 }
 
-resource "kubernetes_manifest" "monitor-mysql" {
+resource "kubectl_manifest" "monitor-mysql" {
   depends_on = [
     helm_release.prometheus
   ]
-  manifest = {
-    "apiVersion" = "monitoring.coreos.com/v1"
-    "kind"       = "ServiceMonitor"
-    "metadata" = {
-      "name"      = "mysql-monitor"
-      "namespace" = kubernetes_namespace.prometheus.metadata.0.name
-      "labels" = {
-        "release" = "prometheus"
+  yaml_body  = <<-EOF
+    apiVersion: monitoring.coreos.com/v1
+    kind: ServiceMonitor
+    metadata:
+      name: mysql-monitor
+      namespace: "prometheus"
+      labels: {
+        release: prometheus
       }
-    }
-    "spec" = {
-      "selector" = {
-        "matchLabels" = local.mysql_labels
-      }
-      "namespaceSelector" = {
-        "any" = true
-      }
-      "endpoints" = [{
-        "port" = "exporter"
-      }]
-    }
-  }
+    spec:
+      selector:
+        matchLabels:
+          App: mysql
+        namespaceSelector:
+          any: true
+      endpoints:
+        - port: web
+    EOF
 }
 
 resource "kubernetes_config_map_v1" "grafana-mysql-exporter" {
@@ -78,7 +70,7 @@ resource "kubernetes_config_map_v1" "grafana-mysql-exporter" {
     labels = {
       "app" = "kube-prometheus-stack-grafana"
       "app.kubernetes.io/instance" = "prometheus"
-      "grafana_dashboard" = 1
+      "grafana_dashboard" = 3
       "release" = "prometheus"
     }
   }
@@ -99,7 +91,7 @@ resource "kubernetes_config_map_v1" "openresty-exporter" {
     labels = {
       "app" = "kube-prometheus-stack-grafana"
       "app.kubernetes.io/instance" = "prometheus"
-      "grafana_dashboard" = 1
+      "grafana_dashboard" = 2
       "release" = "prometheus"
     }
   }
