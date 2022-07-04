@@ -12,7 +12,7 @@ resource "kubernetes_secret" "mysql-pass" {
 
 resource "kubernetes_service" "mysql-service" {
  metadata {
-   name = "mysql-service"
+   name = "mysql"
    namespace = kubernetes_namespace.wordpress.metadata.0.name
    labels = local.mysql_labels
  }
@@ -100,12 +100,18 @@ resource "kubernetes_stateful_set" "mysql" {
       }
 
       spec {
-        access_modes       = ["ReadWriteOnce"]
-        storage_class_name = "standard"
+        access_modes       = ["ReadWriteMany"]
+        storage_class_name = "default"
 
         resources {
           requests = {
             storage = "100Mi"
+          }
+        }
+
+        selector {
+          match_labels = {
+            name = "mysql-volume"
           }
         }
       }

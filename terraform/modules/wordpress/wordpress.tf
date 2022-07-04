@@ -5,8 +5,11 @@ resource "kubernetes_namespace" "wordpress" {
 }
 
 resource "kubernetes_service" "wordpress-service" {
+  depends_on = [
+    kubernetes_service.mysql-service
+  ]
  metadata {
-   name = "wordpress-service"
+   name = "wordpress"
    namespace = kubernetes_namespace.wordpress.metadata.0.name
    labels = local.wordpress_labels
  }
@@ -38,7 +41,7 @@ resource "kubernetes_deployment" "wordpress" {
    namespace = kubernetes_namespace.wordpress.metadata.0.name
  }
  spec {
-   replicas = 1
+   replicas = 5
    selector {
      match_labels = local.wordpress_labels
    }
