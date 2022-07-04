@@ -50,6 +50,8 @@ jobs:
       uses: medyagh/setup-minikube@master
     - name: enable ingress
       run: minikube addons enable ingress
+    - name: disable metrics-server
+      run: minikube addons disable metrics-server
     - name: removing validation webhook
       run: kubectl delete  validatingwebhookconfigurations ingress-nginx-admission
     - name: 'Terragrunt Init'
